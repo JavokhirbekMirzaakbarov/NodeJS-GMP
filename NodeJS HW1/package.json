@@ -1,0 +1,19 @@
+{
+  "name": "nodejs-hw1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "task1.js",
+  "scripts": {
+    "task1": "node task1.js",
+    "task2": "node task2.js",
+    "task3": "node task3.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "csvtojson": "^2.0.10"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.12"
+  }
+}
