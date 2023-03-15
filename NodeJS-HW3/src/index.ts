@@ -1,17 +1,11 @@
 import express from 'express';
+import * as dotenv from 'dotenv';
+dotenv.config();
 import router from './routers/userRouter';
-import users from './db/data';
-import User from './models/userModel';
-import sequelize from './db/sequelize';
 
 const app = express();
 
 app.use(express.json());
-
-(async () => {
-  await sequelize.sync({ force: true });
-  users.map(async (user) => await User.create(user));
-})();
 
 app.use('/api/users', router);
 

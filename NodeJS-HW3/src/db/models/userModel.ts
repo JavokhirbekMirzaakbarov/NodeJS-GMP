@@ -1,5 +1,5 @@
-import sequelize from '../db/sequelize';
-import { User as UserAttributes } from '../db/data';
+import sequelize from '..';
+import users, { User as UserAttributes } from '../data';
 import { DataTypes, ModelDefined, Optional } from 'sequelize';
 
 type UserCreationAttributes = Optional<
@@ -31,5 +31,11 @@ const User: ModelDefined<UserAttributes, UserCreationAttributes> =
       tableName: 'users',
     },
   );
+
+// populate db with some users
+(async () => {
+  await sequelize.sync({ force: true });
+  users.map(async (user) => await User.create(user));
+})();
 
 export default User;
