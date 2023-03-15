@@ -10,6 +10,7 @@ export default class UserService {
   async getExistingUsers() {
     return await User.findAll({
       where: { isDeleted: false },
+      raw: true,
     });
   }
 
@@ -38,5 +39,11 @@ export default class UserService {
 
   async deleteUserById(id: string) {
     return await User.update({ isDeleted: true }, { where: { id } });
+  }
+
+  async filterUsers(users: UserType[], loginSubstring: string, limit: number) {
+    return users
+      .filter((user: UserType) => user.login.includes(`${loginSubstring}`))
+      .slice(0, +limit);
   }
 }

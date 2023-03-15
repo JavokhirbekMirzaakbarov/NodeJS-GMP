@@ -1,5 +1,5 @@
 import { Router, Response } from 'express';
-
+import { User as UserType } from '../db/data';
 import { userSchema, updateSchema } from '../config/schemas';
 import { validateSchema } from '../utils/helpers';
 import UserService from '../services/userService';
@@ -23,11 +23,11 @@ router.get('/', async (req, res) => {
   const users = await userService.getExistingUsers();
 
   if (loginSubstring && limit) {
-    const filteredUsers = users
-      .filter((user) =>
-        user.getDataValue('login').includes(`${loginSubstring}`),
-      )
-      .slice(0, +limit);
+    const filteredUsers = await userService.filterUsers(
+      users as unknown as UserType[],
+      loginSubstring as string,
+      +limit,
+    );
     res.status(200).json(filteredUsers);
   } else {
     res.status(200).json(users);
