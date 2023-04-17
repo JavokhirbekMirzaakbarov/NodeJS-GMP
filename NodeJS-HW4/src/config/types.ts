@@ -1,5 +1,5 @@
 export type User = {
-  id: any;
+  id: string;
   login: string;
   password: string;
   age?: number;
@@ -7,7 +7,7 @@ export type User = {
 };
 
 export type Group = {
-  id: any;
+  id: string;
   name: string;
   permissions: Array<string>;
 };
