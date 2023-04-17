@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
 import User from '../db/models/userModel';
-import UserGroup from '../db/models/userGroupModel';
 import { User as UserType } from '../config/types';
 
 export default class UserService {
@@ -39,7 +38,6 @@ export default class UserService {
   }
 
   async deleteUserById(id: string) {
-    await UserGroup.destroy({ where: { userId: id } });
     return await User.update({ isDeleted: true }, { where: { id } });
   }
 

@@ -1,16 +1,10 @@
-import { DataTypes } from 'sequelize';
 import sequelize from '..';
+import Group from './groupModel';
+import User from './userModel';
 
-const UserGroup = sequelize.define('usergroups', {
-  userId: {
-    allowNull: false,
-    type: DataTypes.STRING,
-    primaryKey: true,
-  },
-  groupId: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-});
+const UserGroup = sequelize.define('UserGroup', {});
+
+User.belongsToMany(Group, { through: UserGroup, foreignKey: 'userId' });
+Group.belongsToMany(User, { through: UserGroup, foreignKey: 'groupId' });
 
 export default UserGroup;

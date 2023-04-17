@@ -1,7 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import Group from '../db/models/groupModel';
 import { Group as GroupType } from '../config/types';
-import UserGroup from '../db/models/userGroupModel';
 
 export const findGroupById = async (id: string) => {
   return await Group.findByPk(id);
@@ -36,6 +35,5 @@ export const updateGroup = async (
 };
 
 export const deleteGroupById = async (id: string) => {
-  await UserGroup.destroy({ where: { groupId: id } });
   return await Group.destroy({ where: { id } });
 };
