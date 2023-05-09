@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { userGroupSchema } from '../config/schemas';
 import { addUsersToGroup, getAll } from '../services/userGroupService';
 import { validateSchema } from '../utils/helpers';
-import { AppErrors } from '../logger/app-errors';
+import { AppError } from '../logger/app-error';
 
 const router = Router();
 
@@ -22,7 +22,7 @@ router.post('/:id', validateSchema(userGroupSchema), async (req, res) => {
   else {
     const errorMessage = `New bind did not get saved!`;
     res.status(200).json({ message: errorMessage });
-    throw new AppErrors(400, errorMessage, 'POST');
+    throw new AppError(400, errorMessage, 'POST', req.body);
   }
 });
 

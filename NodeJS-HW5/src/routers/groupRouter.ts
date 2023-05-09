@@ -1,7 +1,7 @@
 import { Router, Response } from 'express';
 import { groupSchema, updateGroupSchema } from '../config/schemas';
 import { validateSchema } from '../utils/helpers';
-import { AppErrors } from '../logger/app-errors';
+import { AppError } from '../logger/app-error';
 import {
   createGroup,
   findGroupById,
@@ -12,16 +12,22 @@ import {
 
 const router = Router();
 
-router.param('id', async (_, res: Response, next: () => void, id) => {
-  const group = await findGroupById(id);
-  if (!group) {
-    const errorMessage = `Group with id ${id} not found!`;
-    res.status(400).json(errorMessage);
-    throw new AppErrors(400, errorMessage, 'GET');
-  }
-  res.locals.group = group;
-  next();
-});
+router.param(
+  'id',
+  async (_, res: Response, next: (err?: Error) => void, id) => {
+    try {
+      const group = await findGroupById(id);
+      res.locals.group = group;
+      next();
+    } catch (error) {
+      next(
+        new AppError(400, `Group with id ${id} not found!`, 'GET GROUP', {
+          id,
+        }),
+      );
+    }
+  },
+);
 
 router.get('/', async (_, res) => {
   const groups = await getAllGroups();
@@ -39,9 +45,9 @@ router.post('/', validateSchema(groupSchema), async (req, res) => {
       .status(201)
       .json({ message: 'New group created successfully!', data: newGroup });
   else {
-    const errorMessage = 'Group not saved!';
+    const errorMessage = `Group not saved!`;
     res.status(200).json({ message: errorMessage });
-    throw new AppErrors(400, errorMessage, 'POST');
+    throw new AppError(400, errorMessage, 'POST', req.body);
   }
 });
 
@@ -54,7 +60,7 @@ router.patch('/:id', validateSchema(updateGroupSchema), async (req, res) => {
   else {
     const errorMessage = 'User did not get updated!';
     res.status(200).json({ message: errorMessage });
-    throw new AppErrors(400, errorMessage, 'PATCH');
+    throw new AppError(400, errorMessage, 'PATCH');
   }
 });
 
@@ -66,7 +72,9 @@ router.delete('/:id', async (req, res) => {
       .json({ message: `Group with id=${req.params.id} deleted!` });
   else {
     res.status(200).json({ message: 'Something went wrong!' });
-    throw new AppErrors(400, 'Group had NOT been deleted!', 'DELETE');
+    throw new AppError(400, 'Group had NOT been deleted!', 'DELETE', {
+      id: res.locals.group.id,
+    });
   }
 });
 

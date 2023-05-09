@@ -6,4 +6,5 @@ export const uncaughtExceptionLogger = (err: any) => {
     error: err,
   });
   logger.error(log);
+  process.exit(1);
 };
