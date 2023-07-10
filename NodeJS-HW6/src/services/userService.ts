@@ -1,6 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
+import bcrypt from 'bcrypt';
 import User from '../db/models/userModel';
 import { User as UserType } from '../config/types';
+
+const saltRounds = 10;
 
 export default class UserService {
   async findUserById(id: string) {
@@ -14,29 +17,51 @@ export default class UserService {
     });
   }
 
-  async getUser(login: string, password: string) {
-    const user = await User.findOne({
-      where: { login, password },
-    });
-    return user;
+  async login(login: string) {
+    try {
+      const user = await User.findAll({
+        where: { login },
+        raw: true,
+      });
+      return user;
+    } catch (error) {
+      return new Error(error);
+    }
   }
 
   async createUser({ login, password, age }: UserType) {
-    const newUser = {
-      login,
-      password,
-      age,
-      id: uuidv4(),
-      isDeleted: false,
-    };
-    return await User.create(newUser);
+    try {
+      const hash = await bcrypt.hash(password, saltRounds);
+      const newUser = {
+        login,
+        password: hash,
+        age,
+        id: uuidv4(),
+        isDeleted: false,
+      };
+      return await User.create(newUser);
+    } catch (err) {
+      return new Error(err);
+    }
   }
 
   async updateUser(oldUser: UserType, newFields: Partial<UserType>) {
-    const newUser = {
-      ...oldUser,
-      ...newFields,
-    };
+    let newUser;
+
+    if (newFields?.password) {
+      const hash = await bcrypt.hash(newFields.password, saltRounds);
+      newUser = {
+        ...oldUser,
+        ...newFields,
+        password: hash,
+      };
+    } else {
+      newUser = {
+        ...oldUser,
+        ...newFields,
+      };
+    }
+
     return await User.update(newUser, {
       where: {
         id: oldUser.id,
