@@ -2,6 +2,8 @@
 
 This repository stores all hometasks done during Node JS Global Mentoring Program 2023 by Mirzaakbarov Javokhirbek
 
-## Instructions
+## NodeJS HW1
 
-Check out the separate hometask folders for more instructions on how to run the project
+- Streams
+- File System
+- Events, Event Loop, Async JS
