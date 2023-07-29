@@ -8,15 +8,12 @@ export const getAll = async () => {
 export const addUsersToGroup = async (groupId: string, userIds: string[]) => {
   const transaction = await sequelize.transaction();
   try {
-    const promises = userIds.map(
-      (userId) => UserGroup.create({ groupId, userId }),
-      { transaction },
-    );
-    const result = await Promise.all(promises);
+    const records = userIds.map((userId) => ({ groupId, userId }));
+    const result = await UserGroup.bulkCreate(records, { transaction });
     await transaction.commit();
     return result;
   } catch (error) {
     await transaction.rollback();
-    throw new Error(error);
+    throw new Error();
   }
 };

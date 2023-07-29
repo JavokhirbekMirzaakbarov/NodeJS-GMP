@@ -6,32 +6,27 @@ export const findGroupById = async (id: string) => {
   return await Group.findByPk(id);
 };
 
-export const getAllGroups = async () => {
+export const getAll = async () => {
   return await Group.findAll();
 };
 
-export const createGroup = async ({ name, permissions }: GroupType) => {
+export const createGroup = async (group: GroupType) => {
   const newGroup = {
-    name,
+    ...group,
     id: uuidv4(),
-    permissions,
   };
   return await Group.create(newGroup);
 };
 
-export const updateGroup = async (
-  oldGroup: GroupType,
-  newFields: Partial<GroupType>,
-) => {
-  const newGroup = {
-    ...oldGroup,
-    ...newFields,
-  };
-  return await Group.update(newGroup, {
-    where: {
-      id: oldGroup.id,
+export const updateGroup = async (newGroup: GroupType, id: string) => {
+  return await Group.update(
+    { ...newGroup },
+    {
+      where: {
+        id: id,
+      },
     },
-  });
+  );
 };
 
 export const deleteGroupById = async (id: string) => {

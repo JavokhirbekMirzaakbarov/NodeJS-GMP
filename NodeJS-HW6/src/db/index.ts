@@ -4,6 +4,6 @@ const sequelize = new Sequelize(
   `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_SERVER}/${process.env.DB_NAME}`,
 );
 
-(async () => await sequelize.sync({ alter: true }))();
-
 export default sequelize;
+
+// (async () => await sequelize.sync({ alter: true }))();
