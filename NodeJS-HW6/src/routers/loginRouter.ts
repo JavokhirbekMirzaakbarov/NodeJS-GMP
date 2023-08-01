@@ -1,13 +1,11 @@
-import { User } from '../config/types';
 import { Router } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { User } from '../config/types';
+import { login as loginUser } from '../services/userService';
 import { JWT_SECRET } from '../config/constants';
-import UserService from '../services/userService';
 
-const userService = new UserService();
-
-const router = Router();
+export const router = Router();
 
 const checkPassword = async (password: string, hash: string) => {
   return await bcrypt.compare(password, hash);
@@ -16,7 +14,7 @@ const checkPassword = async (password: string, hash: string) => {
 router.post('/', async (req, res) => {
   try {
     const { login, password } = req.body;
-    const users = (await userService.login(login)) as unknown as User[];
+    const users = (await loginUser(login)) as unknown as User[];
 
     if (users.length)
       users.forEach(async (user) => {
@@ -36,5 +34,3 @@ router.post('/', async (req, res) => {
     res.status(403).json({ success: false, message: 'Bad request' });
   }
 });
-
-export default router;
